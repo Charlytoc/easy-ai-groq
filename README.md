@@ -1,4 +1,4 @@
-# A template to make AI applications with Python (FastAPI) and Typescript (ViteJs) using Grok as APi
+# A template to make AI applications with Python (FastAPI) and Typescript (ViteJs) using Groq as APi
 
 ## Requirements
 - Python (install latest version here https://www.python.org/downloads/)
@@ -34,3 +34,19 @@ npm install
 ```bash
 cp .env.example .env
 ```
+
+7. Add your Groq API key to the .env file. Find your API key in your Groq account settings. [HERE](https://console.groq.com/keys)
+
+8. Run the application
+```bash
+bash init-dev.sh
+```
+
+
+That is it! You can now access the application at http://localhost:8000 and customize it to your needs.
+
+The init-dev.sh script will run the backend and frontend servers concurrently.
+
+In the future I'll update the repo with other useful scripts to deploy and more! Feel free to contribute and make AI accesible to everyone!
+
+
