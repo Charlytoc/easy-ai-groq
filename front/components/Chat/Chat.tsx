@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 interface Message {
   content: string;
-  role: "user" | "ai";
+  role: "user" | "assistant";
 }
 
 const MessageComponent = ({
@@ -13,7 +13,7 @@ const MessageComponent = ({
   role,
 }: {
   content: string;
-  role: "user" | "ai";
+  role: "user" | "assistant";
 }) => {
   const readMessage = () => {
     const utterance = new SpeechSynthesisUtterance(content);
@@ -27,13 +27,14 @@ const MessageComponent = ({
 
   return (
     <div className={`message ${role}`}>
-      <p><strong>{role}:</strong> {content}</p>
+      <p>
+        <strong>{role}:</strong> {content}
+      </p>
       <button onClick={readMessage}>{SVGS.read}</button>
       <button onClick={copyMessage}>{SVGS.copy}</button>
     </div>
   );
 };
-
 
 export const Chat = () => {
   const [message, setMessage] = useState<string>("");
@@ -52,11 +53,11 @@ export const Chat = () => {
           const updatedMessages = [...prevMessages];
           if (
             updatedMessages.length > 0 &&
-            updatedMessages[updatedMessages.length - 1].role === "ai"
+            updatedMessages[updatedMessages.length - 1].role === "assistant"
           ) {
             updatedMessages[updatedMessages.length - 1].content += data.content;
           } else {
-            updatedMessages.push({ content: data.content, role: "ai" });
+            updatedMessages.push({ content: data.content, role: "assistant" });
           }
           return updatedMessages;
         });
@@ -92,11 +93,25 @@ export const Chat = () => {
   const sendMessage = () => {
     if (ws) {
       if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ prompt: message }));
+        const lastFourMessages = messages.slice(-4);
+        toast.error(`${messages.length}`)
+        const memory = lastFourMessages.map((msg) => {
+          return {
+            role: msg.role,
+            content: msg.content,
+          };
+        });
+
+        const payload = {
+          prompt: message,
+          memory: memory,
+        };
+
+        ws.send(JSON.stringify(payload));
         setMessages((prevMessages) => [
           ...prevMessages,
           { content: message, role: "user" },
-          { content: "", role: "ai" },
+          { content: "", role: "assistant" },
         ]);
         setMessage("");
       } else {
@@ -117,14 +132,27 @@ export const Chat = () => {
     <div className="chat-component">
       <h1>Easy chatbot</h1>
       <div className="chat-info">
-        <small>Chat with the AI using Groq in real time</small>
+        <small>Make your own AI application that is blazzingly fast with</small>
+        <span> | </span>
         <a
           href="https://console.groq.com/docs/quickstart"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Find more here!
+          Groq
         </a>
+        <span> | </span>
+        <a
+          href="https://vitejs.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >ViteJs</a>
+        <span> | </span>
+        <a
+          href="https://fastapi.tiangolo.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >FastAPI</a>
       </div>
       <div className="chat-input">
         <textarea

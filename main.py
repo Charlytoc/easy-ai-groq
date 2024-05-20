@@ -51,14 +51,14 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.send_text(json.dumps({"event": "pong"}))
                 continue
 
-            print(data_dict)  # {'system_prompt': ..., 'prompt': ...}
-            
+            print("USER: ", data_dict["prompt"])  # {'system_prompt': ..., 'prompt': ...}
+            # print("MEMORY: ", data_dict.get("memory", []))
             async def completion_callback(chunk):
                 message = {
                     "event": "chunk",
                     "content": chunk.choices[0].delta.content
                 }
-                if chunk.choices[0].delta.content == None:
+                if not chunk.choices[0].delta.content:
                     return
                 
                 print(chunk.choices[0].delta.content, end="")
@@ -72,7 +72,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 print("\n")
                 await websocket.send_text(json.dumps(message))
 
-            await create_groq_completion(callback=completion_callback, stream=True, user_message=data_dict["prompt"], system_prompt=os.getenv("SYSTEM_PROMPT"))
+            await create_groq_completion(callback=completion_callback, stream=True, user_message=data_dict["prompt"], system_prompt=os.getenv("SYSTEM_PROMPT"), previous_message=data_dict.get("memory", []))
             await finish_completion_callback()
 
     except json.JSONDecodeError as e:

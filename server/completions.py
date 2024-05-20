@@ -21,22 +21,28 @@ client = Groq(
 async def create_groq_completion(
     system_prompt="You are a useful assistant that answers everyone with `SYSTEM PROMPT UNSET`",
     user_message="Hi!",
+    previous_message=[],
     stream=False,
     callback=None,
     model=DEFAULT_MODEL,
 ):
-
+    messages = []
+    messages.append(
+        {
+            "role": "system",
+            "content": system_prompt,
+        }
+    )
+    if len(previous_message) > 0:
+        messages.extend(previous_message)
+    messages.append(
+        {
+            "role": "user",
+            "content": user_message,
+        }
+    )
     chat_completion = client.chat.completions.create(
-        messages=[
-            {
-                "role": "system",
-                "content": system_prompt,
-            },
-            {
-                "role": "user",
-                "content": user_message,
-            },
-        ],
+        messages=messages,
         max_tokens=3000,
         model=model,
         stream=stream,
