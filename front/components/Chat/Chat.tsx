@@ -2,6 +2,7 @@ import { useState, useEffect, KeyboardEvent } from "react";
 import "./chat.css";
 import { SVGS } from "../../assets/svgs";
 import toast from "react-hot-toast";
+import { markdownToHtml } from "../../utils/lib";
 
 interface Message {
   content: string;
@@ -15,9 +16,18 @@ const MessageComponent = ({
   content: string;
   role: "user" | "assistant";
 }) => {
+  const [isReading, setIsReading] = useState(false);
+
   const readMessage = () => {
-    const utterance = new SpeechSynthesisUtterance(content);
-    speechSynthesis.speak(utterance);
+    if (isReading) {
+      speechSynthesis.cancel();
+      setIsReading(false);
+    } else {
+      const newUtterance = new SpeechSynthesisUtterance(content);
+      newUtterance.onstart = () => setIsReading(true);
+      newUtterance.onend = () => setIsReading(false);
+      speechSynthesis.speak(newUtterance);
+    }
   };
 
   const copyMessage = () => {
@@ -27,10 +37,14 @@ const MessageComponent = ({
 
   return (
     <div className={`message ${role}`}>
-      <p>
-        <strong>{role}:</strong> {content}
-      </p>
-      <button onClick={readMessage}>{SVGS.read}</button>
+      <strong>{role}:</strong>
+      <div
+        dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }}
+        className="content"
+      ></div>
+      <button onClick={readMessage} disabled={isReading}>
+        {isReading ? "Reading..." : SVGS.read}
+      </button>
       <button onClick={copyMessage}>{SVGS.copy}</button>
     </div>
   );
@@ -47,8 +61,6 @@ export const Chat = () => {
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.event === "chunk" && data.content) {
-        console.log(data.content);
-
         setMessages((prevMessages) => {
           const updatedMessages = [...prevMessages];
           if (
@@ -94,7 +106,6 @@ export const Chat = () => {
     if (ws) {
       if (ws.readyState === WebSocket.OPEN) {
         const lastFourMessages = messages.slice(-4);
-        toast.error(`${messages.length}`)
         const memory = lastFourMessages.map((msg) => {
           return {
             role: msg.role,
@@ -142,17 +153,17 @@ export const Chat = () => {
           Groq
         </a>
         <span> | </span>
-        <a
-          href="https://vitejs.dev/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >ViteJs</a>
+        <a href="https://vitejs.dev/" target="_blank" rel="noopener noreferrer">
+          ViteJs
+        </a>
         <span> | </span>
         <a
           href="https://fastapi.tiangolo.com/"
           target="_blank"
           rel="noopener noreferrer"
-          >FastAPI</a>
+        >
+          FastAPI
+        </a>
       </div>
       <div className="chat-input">
         <textarea
