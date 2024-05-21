@@ -1,8 +1,21 @@
 # Una plantilla para hacer aplicaciones de IA con Python (FastAPI) y TypeScript (ViteJs) utilizando Groq como API
 
+## Si estás en un Codespace
+1. Ejecuta lo siguiente en la terminal
+```
+cp .env.example .env
+```
+2. Busca la llave de Groq [acá](https://console.groq.com/keys)
+3. Reemplaza la variable de entorno GROQ_API_KEY por la key correcta
+4. Inicia el servidor de desarrollo de nuevo
+```
+bash init-dev.sh
+```
+
 ## Requisitos
 - Python (instale la versión más reciente aquí https://www.python.org/downloads/)
 - NodeJs (instale la versión LTS aquí https://nodejs.org/en/download/)
+
 
 ## Instalación
 1. Clona este repositorio

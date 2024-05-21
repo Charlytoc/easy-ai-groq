@@ -15,7 +15,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install -r requirements.txt && npm i"
+	"postCreateCommand": "pip install -r requirements.txt && npm i && bash init-dev.sh"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
