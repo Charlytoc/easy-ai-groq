@@ -21,7 +21,7 @@ py -m venv venv
 
 4. Activa el entorno virtual
 ```bash
-source venv/bin/activate
+source venv/Scripts/activate
 ```
 
 5.Instala las dependencias

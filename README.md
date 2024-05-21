@@ -21,13 +21,12 @@ py -m venv venv
 
 4. Activate the virtual environment
 ```bash
-source venv/bin/activate
+source venv/Scripts/activate
 ```
 
 5. Install the dependencies
 ```bash
-pip install -r requirements.txt
-npm install
+pip install -r requirements.txt && npm install
 ```
 
 6. Copy the .env.example file to .env
