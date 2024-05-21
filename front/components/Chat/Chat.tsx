@@ -4,6 +4,10 @@ import { SVGS } from "../../assets/svgs";
 import toast from "react-hot-toast";
 import { markdownToHtml } from "../../utils/lib";
 
+
+const websocketUrl = "wss://localhost:8000/message";
+
+
 interface Message {
   content: string;
   role: "user" | "assistant";
@@ -56,7 +60,7 @@ export const Chat = () => {
   const [ws, setWs] = useState<WebSocket | null>(null);
 
   const connectWebSocket = () => {
-    const websocket = new WebSocket("ws://127.0.0.1:8000/message");
+    const websocket = new WebSocket(websocketUrl);
 
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);

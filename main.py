@@ -16,10 +16,33 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 IS_DEV_ENV = os.getenv("ENVIRONMENT") == "DEV"
+import os
 
 
 def reload():
-    print("Environment: ", os.getenv("ENVIRONMENT"))
+    codespace_name = os.getenv("CODESPACE_NAME")
+
+    if isinstance(codespace_name, str) and len(codespace_name) > 0:
+        print("👁️ CODESPACE_NAME:", codespace_name)
+        
+        # Path to the file
+        file_path = 'front/components/Chat/Chat.tsx'
+        
+        # Read the file line by line
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+        
+        # Modify the specific line
+        for i, line in enumerate(lines):
+            if 'const websocketUrl' in line:
+                lines[i] = f'const websocketUrl = "wss://{codespace_name}-8000.app.github.dev/message";'
+                break
+        
+        # Write the modified lines back to the file
+        with open(file_path, 'w') as file:
+            file.writelines(lines)
+
+    print("🟩 Environment: ", os.getenv("ENVIRONMENT"))
 
 
 app = FastAPI(on_startup=[reload])
