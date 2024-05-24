@@ -3,7 +3,7 @@ import json
 from fastapi import FastAPI, WebSocket, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from starlette.exceptions import HTTPException
 from starlette.websockets import WebSocketDisconnect
 from dotenv import load_dotenv
@@ -16,8 +16,6 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 IS_DEV_ENV = os.getenv("ENVIRONMENT") == "DEV"
-import os
-
 
 def reload():
     codespace_name = os.getenv("CODESPACE_NAME")
@@ -112,6 +110,10 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 app.mount("/", StaticFiles(directory="dist", html=True), name="static")
+
+@app.get("/healthy")
+async def health_check():
+    return JSONResponse(content={"status": "healthy"}, status_code=200)
 
 
 @app.exception_handler(HTTPException)
