@@ -9,6 +9,7 @@ email_validator==2.1.1
 fastapi==0.111.0
 fastapi-cli==0.0.4
 groq==0.6.0
+gunicorn==22.0.0
 h11==0.14.0
 httpcore==1.0.5
 httptools==0.6.1
@@ -19,6 +20,7 @@ markdown-it-py==3.0.0
 MarkupSafe==2.1.5
 mdurl==0.1.2
 orjson==3.10.3
+packaging==24.0
 pydantic==2.7.1
 pydantic_core==2.18.2
 Pygments==2.18.0
